@@ -17,7 +17,7 @@ namespace RideAlong
         {
             get
             {
-                return new Action(() => App.Current.MainPage.Navigation.PopModalAsync());
+                return new Action(() => App.Current.MainPage.Navigation.PopAsync());
             }
         }
 
