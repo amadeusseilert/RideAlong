@@ -22,15 +22,49 @@ namespace RideAlong.Sqlite
         {
             lock (locker)
             {
-                return (from i in database.Table<User>() select i).ToList();
+                try
+                {
+                    return (from i in database.Table<User>() select i).ToList();
+                }
+                catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return null;
+                }
+                
             }
         }
 
-        public User GetItem(long id)
+        public User GetItem(int id)
         {
             lock (locker)
             {
-                return database.Table<User>().FirstOrDefault(x => x.ID == id);
+                try
+                {
+                    return database.Table<User>().FirstOrDefault(x => x.id_db == id);
+                }  catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return null;
+                }
+            
+            }
+        }
+
+        public User GetItemFacebookId(long id)
+        {
+            lock (locker)
+            {
+                try
+                {
+                    return database.Table<User>().FirstOrDefault(x => x.id == id);
+                }
+                catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return null;
+                }
+
             }
         }
 
@@ -38,7 +72,14 @@ namespace RideAlong.Sqlite
         {
             lock (locker)
             {
-                return database.Insert(item);
+                try
+                {
+                    return database.Insert(item);
+                } catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return -1;
+                }
             }
         }
 
@@ -46,7 +87,15 @@ namespace RideAlong.Sqlite
         {
             lock (locker)
             {
-                return database.Delete<User>(id);
+                try
+                {
+                    return database.Delete<User>(id);
+                } catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return -1;
+                }
+                
             }
         }
     }

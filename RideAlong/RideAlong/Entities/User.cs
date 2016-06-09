@@ -10,9 +10,10 @@ namespace RideAlong.Entities
 
         }
 
-        [PrimaryKey]
-        public long ID { get; set; }
-        public String Name { get; set; }
-        public int Rating { get; set; }
+        [PrimaryKey, AutoIncrement, Unique]
+        public long id_db { get; set; }
+        public long id { get; set; }
+        public String name { get; set; }
+        public int rating { get; set; }
     }
 }

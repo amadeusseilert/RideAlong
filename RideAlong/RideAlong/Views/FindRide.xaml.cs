@@ -23,8 +23,8 @@ namespace RideAlong
 			Picker pickerDestination = new Picker{ VerticalOptions = LayoutOptions.CenterAndExpand };
 
 			foreach (Locations loc in locations){
-				pickerOrigin.Items.Add(loc.Name);
-				pickerDestination.Items.Add(loc.Name);
+				pickerOrigin.Items.Add(loc.name);
+				pickerDestination.Items.Add(loc.name);
 			}
 				
 			Label lblData = new Label {
@@ -33,10 +33,10 @@ namespace RideAlong
 				HorizontalTextAlignment = TextAlignment.Start
 			};
 
-			DatePicker datepicker = new DatePicker {
-				Date = DateTime.Now,
-				Format = "dd-MM-yyyy",
-//				MinimumDate = DateTime.Now,
+            DatePicker datepicker = new DatePicker {
+                Date = DateTime.Now,
+                Format = "dd-MM-yyyy",
+                MinimumDate = DateTime.Now.Date,
 				MaximumDate = DateTime.Now.AddMonths(6)
 			};
 
@@ -47,7 +47,9 @@ namespace RideAlong
 				HorizontalTextAlignment = TextAlignment.Start
 			};
 
-			TimePicker timepicker = new TimePicker{ Time = DateTime.Now.TimeOfDay };
+			TimePicker timepicker = new TimePicker{
+                Time = DateTime.Now.TimeOfDay
+            };
 
 			Button btnAdd = new Button {
 				IsEnabled = false,
@@ -62,25 +64,23 @@ namespace RideAlong
 				string destination = pickerDestination.Items[pickerDestination.SelectedIndex];
 				string date = datepicker.Date.ToString("dd-MM-yyyy");
 				string time = timepicker.Time.ToString(@"hh\:mm");
-                string jsonFoundRides = null;
                 try
                 {
-                    jsonFoundRides = await Web.WebService.GET(Settings.WebServiceURL + API.API_GetRides +
+                    string jsonFoundRides = await Web.WebService.GET(Settings.WebServiceURL + API.API_GetRides +
                         origin + "/" + destination + "/" + date + "/" + time);
+                    if (jsonFoundRides == "[]" || jsonFoundRides == null)
+                    {
+                        await DisplayAlert("No rides Found!", "No rides were found that matches your search.", "Ok");
+                    }
+                    else
+                    {
+                        await Navigation.PushAsync(new ListFoundRides(jsonFoundRides));
+                    }
                 } catch (WebException we)
                 {
                     await DisplayAlert("Error", we.Message, "Ok");
                 }
-				
-				if (jsonFoundRides == "[]")
-                {
-                    await DisplayAlert("No rides Found!", "No rides were found that matches your search.", "Ok");
-                }
-                else
-                {
-					await Navigation.PushAsync(new ListFoundRides(jsonFoundRides));
-				}
-					
+		
 			};
 
 

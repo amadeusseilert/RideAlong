@@ -43,13 +43,13 @@ namespace RideAlong.Views
                 if (e.SelectedItem != null)
                 {
                     var selected = e.SelectedItem as Ride;
-                    if (App.dbRide.GetItem(selected.ID) == null)
+                    if (App.dbRide.GetItemDynamoID(selected.id) == null)
                     {
                         var resp = await DisplayAlert("Ride Selected", "Do you want to ask for this ride?", "Yes", "No");
                         if (resp == true)
                         {
 
-                            string result = await Web.WebService.DELETE(Settings.WebServiceURL + API.API_ReserveRide + selected.ID);
+                            string result = await Web.WebService.DELETE(Settings.WebServiceURL + API.API_ReserveRide + selected.id);
                             if (string.Compare(result, Strings.WS_OK) == 0)
                             {
                                 App.dbRide.SaveItem(selected);

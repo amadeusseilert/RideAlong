@@ -36,13 +36,13 @@ namespace RideAlong.Web
         {
             HttpResponseMessage response = null;
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
+            
             try
             {
                 response = await client.PostAsync(url, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    return Strings.WS_OK;
+                    return await response.Content.ReadAsStringAsync();
                 } else
                 {
                     return Strings.WS_ERROR;

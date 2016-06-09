@@ -20,23 +20,22 @@ namespace RideAlong
         {
             InitializeComponent();
             locations = null;
-            DAUser dbUser = App.dbUser;
 
-            this.user = dbUser.GetItem(user.ID);
+            this.user = App.dbUser.GetItemFacebookId(user.id);
 
             if (this.user == null)
             {
                 this.user = user;
-                dbUser.SaveItem(this.user);
+                App.dbUser.SaveItem(this.user);
                 
             }          
 
-            lblUserName.Text = "Hello, " + this.user.Name;
-            lblUserRating.Text = "Rating: +" + this.user.Rating.ToString();
+            lblUserName.Text = "Hello, " + this.user.name;
+            lblUserRating.Text = "Rating: +" + this.user.rating.ToString();
 
             btnSet.Clicked += async (sender, e) => {
                 await setLocations();
-                await Navigation.PushAsync(new SetRide(locations));
+                await Navigation.PushAsync(new SetRide(locations, user));
             };
 
             btnFind.Clicked += async (sender, e) => {
@@ -45,7 +44,7 @@ namespace RideAlong
             };
 
             btnMyRides.Clicked += async (sender, e) => {
-                await Navigation.PushAsync(new MyRides(this.user.Name));
+                await Navigation.PushAsync(new MyRides(this.user.name));
             };
         }
 

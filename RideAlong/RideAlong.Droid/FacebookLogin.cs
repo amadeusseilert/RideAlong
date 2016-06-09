@@ -37,9 +37,9 @@ namespace RideAlong.Droid
                     var obj = JObject.Parse(response.GetResponseText());
 
                     User user = new User();
-                    user.ID = long.Parse(obj["id"].ToString().Replace("\"", ""));
-                    user.Name = obj["name"].ToString().Replace("\"", "");
-                    user.Rating = 9000;
+                    user.id = long.Parse(obj["id"].ToString().Replace("\"", ""));
+                    user.name = obj["name"].ToString().Replace("\"", "");
+                    user.rating = 9000;
 
                     await App.NavigateToHome(user);
                 }

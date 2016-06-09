@@ -10,15 +10,16 @@ namespace RideAlong.Entities
 
         }
 
-        [PrimaryKey]
-        public string ID { get; set; }
-        public string Context { get; set; }
-        public string Driver { get; set; }
-        public string Origin { get; set; }
-        public string Destination { get; set; }
-        public int Slots { get; set; }
-        public string Date { get; set; }
-        public string Time { get; set; }
+        [PrimaryKey, AutoIncrement, Unique]
+        public int id_db { get; set; }
+        public string id { get; set; }
+        public string context { get; set; }
+        public string driver { get; set; }
+        public string origin { get; set; }
+        public string destination { get; set; }
+        public int slots { get; set; }
+        public string date { get; set; }
+        public string time { get; set; }
 
     }
 }

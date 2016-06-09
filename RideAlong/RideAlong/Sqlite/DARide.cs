@@ -22,20 +22,84 @@ namespace RideAlong.Sqlite
         {
             lock (locker)
             {
-                return (from i in database.Table<Ride>() select i).ToList();
+                try
+                {
+                    return (from i in database.Table<Ride>() select i).ToList();
+                }
+                catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return null;
+                }
+                
             }
         }
 
-        public IEnumerable<Ride> GetItemOwner(string name)
-        {
-            return database.Query<Ride>("SELECT * FROM Ride WHERE Driver = ?", name);
-        }
-
-        public Ride GetItem(string id)
+        public IEnumerable<Ride> GetItemByDriver(string name)
         {
             lock (locker)
             {
-                return database.Table<Ride>().FirstOrDefault(x => String.Compare(x.ID, id) == 0);
+                try
+                {
+                    return database.Query<Ride>("SELECT * FROM Ride WHERE driver = ?", name);
+                }
+                catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return null;
+                }
+            }
+                     
+        }
+
+        public IEnumerable<Ride> GetItemByPassanger(string name)
+        {
+            lock (locker)
+            {
+                try
+                {
+                    return database.Query<Ride>("SELECT * FROM Ride WHERE driver != ?", name);
+                }
+                catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return null;
+                }
+            }
+
+        }
+
+        public Ride GetItem(int id)
+        {
+            lock (locker)
+            {
+                try
+                {
+                    return database.Table<Ride>().FirstOrDefault(x => x.id_db == id);
+                }
+                catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return null;
+                }
+                
+            }
+        }
+
+        public Ride GetItemDynamoID(string id)
+        {
+            lock (locker)
+            {
+                try
+                {
+                    return database.Table<Ride>().FirstOrDefault(x => String.Compare(x.id, id) == 0);
+                }
+                catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return null;
+                }
+
             }
         }
 
@@ -43,7 +107,16 @@ namespace RideAlong.Sqlite
         {
             lock (locker)
             {
-                return database.Insert(item);
+                try
+                {
+                    return database.Insert(item);
+                }
+                catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return -1;
+                }
+                
             }
         }
 
@@ -51,7 +124,16 @@ namespace RideAlong.Sqlite
         {
             lock (locker)
             {
-                return database.Delete<Ride>(id);
+                try
+                {
+                    return database.Delete<Ride>(id);
+                }
+                catch (SQLiteException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.StackTrace);
+                    return -1;
+                }
+                
             }
         }
     }

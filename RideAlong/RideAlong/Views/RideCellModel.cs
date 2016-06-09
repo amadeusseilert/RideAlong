@@ -16,9 +16,9 @@ namespace RideAlong.Views
             {
                 FontFamily = "HelveticaNeue-Medium",
                 FontSize = 12,
-                TextColor = Color.Blue,
+                TextColor = Color.FromRgb(160,160, 250),
             };
-            driverLabel.SetBinding(Label.TextProperty, new Binding("Driver")
+            driverLabel.SetBinding(Label.TextProperty, new Binding("driver")
             {
                 StringFormat = "Driver: {0}"
             });
@@ -28,7 +28,7 @@ namespace RideAlong.Views
                 FontSize = 12,
                 TextColor = Color.Gray
             };
-            originLabel.SetBinding(Label.TextProperty, new Binding("Origin")
+            originLabel.SetBinding(Label.TextProperty, new Binding("origin")
             {
                 StringFormat = "Origin: {0}"
             });
@@ -38,7 +38,7 @@ namespace RideAlong.Views
                 FontSize = 12,
                 TextColor = Color.Gray
             };
-            destinationLabel.SetBinding(Label.TextProperty, new Binding("Destination")
+            destinationLabel.SetBinding(Label.TextProperty, new Binding("destination")
             {
                 StringFormat = "Destination: {0}"
             });
@@ -48,7 +48,7 @@ namespace RideAlong.Views
                 FontSize = 10,
                 TextColor = Color.White
             };
-            dateLabel.SetBinding(Label.TextProperty, new Binding("Date")
+            dateLabel.SetBinding(Label.TextProperty, new Binding("date")
             {
                 StringFormat = "Date: {0}"
             });
@@ -58,7 +58,7 @@ namespace RideAlong.Views
                 FontSize = 10,
                 TextColor = Color.White
             };
-            timeLabel.SetBinding(Label.TextProperty, new Binding("Time")
+            timeLabel.SetBinding(Label.TextProperty, new Binding("time")
             {
                 StringFormat = "Time: {0}"
             });

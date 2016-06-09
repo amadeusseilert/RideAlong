@@ -13,8 +13,8 @@ namespace RideAlong.Entities
 
         }
 
-        public Int64 ID { get; set; }
-        public String Name { get; set; }
+        public Int64 id { get; set; }
+        public String name { get; set; }
 
     }
 }

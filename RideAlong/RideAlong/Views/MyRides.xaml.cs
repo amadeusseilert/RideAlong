@@ -20,17 +20,8 @@ namespace RideAlong
             InitializeComponent();
             Title = "My Rides";
 
-            try {
-                IEnumerable<Ride> temp = App.dbRide.GetItemOwner(name);
-                settedRides = temp.ToList();
-                markedRides = App.dbRide.GetItems().Except(temp).ToList();
-
-            } catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.StackTrace);
-            }
-            
-           
+            settedRides = App.dbRide.GetItemByDriver(name).ToList();
+            markedRides = App.dbRide.GetItemByPassanger(name).ToList();
 
             btnSetted.Clicked += async (sender, e) => {
                 await Navigation.PushAsync(new MyRides_Setted(settedRides));
