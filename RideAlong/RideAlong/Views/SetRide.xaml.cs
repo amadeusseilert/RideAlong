@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 using Xamarin.Forms;
+using RideAlong.Entities;
 
 namespace RideAlong
 {
     public partial class SetRide : ContentPage
     {
-        public SetRide()
+        public SetRide(List<Locations> locations)
         {
             InitializeComponent();
         }

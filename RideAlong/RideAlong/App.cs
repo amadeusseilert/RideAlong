@@ -1,4 +1,5 @@
 ﻿using RideAlong.Entities;
+using RideAlong.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ using Xamarin.Forms;
 namespace RideAlong
 {
     public class App : Application
-    {
-
-        public static User user { get; set; }
+    { 
+        public static DAUser dbUser;
+        public static DARide dbRide;
 
         public static Action HideLoginView
         {
@@ -23,11 +24,12 @@ namespace RideAlong
 
         public App()
         {
-            user = new User();
+            dbUser = new DAUser();
+            dbRide = new DARide();
             MainPage = new NavigationPage(new Start());
         }
 
-        public async static Task NavigateToHome()
+        public async static Task NavigateToHome(User user)
         {
             HideLoginView();
             await Current.MainPage.Navigation.PushAsync(new Home(user));

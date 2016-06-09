@@ -1,59 +1,138 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 using RideAlong.Entities;
 using RideAlong.Resources;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using RideAlong.Views;
+using System.Net;
 
 namespace RideAlong
 {
-    public partial class FindRide : ContentPage
-    {
+    public partial class FindRide: ContentPage{
 
+		public FindRide(List<Locations> locations){
+			InitializeComponent();
 
-        public FindRide()
-        {
-            InitializeComponent();
+            Title = "Find a Ride";
+			
+			Label lblOrigin = new Label{ Text = "Origin:", HorizontalOptions = LayoutOptions.Start };
+			Label lblDestination = new Label{ Text = "Destination:", HorizontalOptions = LayoutOptions.Start };
+			Picker pickerOrigin = new Picker{ VerticalOptions = LayoutOptions.CenterAndExpand };
+			Picker pickerDestination = new Picker{ VerticalOptions = LayoutOptions.CenterAndExpand };
 
-            Button button = new Button()
-            {
-                Text = "Find Locations!"
-            };
+			foreach (Locations loc in locations){
+				pickerOrigin.Items.Add(loc.Name);
+				pickerDestination.Items.Add(loc.Name);
+			}
+				
+			Label lblData = new Label {
+				Text = "Date:",
+				VerticalOptions = LayoutOptions.CenterAndExpand,
+				HorizontalTextAlignment = TextAlignment.Start
+			};
 
-            Label header = new Label
-            {
-                Text = "Exemplo de Request",
-                HorizontalOptions = LayoutOptions.Center
-            };
+			DatePicker datepicker = new DatePicker {
+				Date = DateTime.Now,
+				Format = "dd-MM-yyyy",
+//				MinimumDate = DateTime.Now,
+				MaximumDate = DateTime.Now.AddMonths(6)
+			};
 
+			Label lblTime = new Label
+			{
+				Text = "Time:",
+				VerticalOptions = LayoutOptions.CenterAndExpand,
+				HorizontalTextAlignment = TextAlignment.Start
+			};
 
-            Label label = new Label();
+			TimePicker timepicker = new TimePicker{ Time = DateTime.Now.TimeOfDay };
 
-            button.Clicked += async (sender, e) =>
-            {
-                string result = await Web.WebService.getRequest("http://ec2-52-67-5-21.sa-east-1.compute.amazonaws.com/RideAlong-WebService/api/locations");
-                //HANDLE JSON
-                //...
-                //
-                label.Text = result;
-            };
+			Button btnAdd = new Button {
+				IsEnabled = false,
+				Margin = 10,
+				Text = "Buscar caronas",
+				VerticalOptions = LayoutOptions.CenterAndExpand,
+				HorizontalOptions = LayoutOptions.FillAndExpand
+			};
 
-            Content = new StackLayout
-            {
-                Children =
+			btnAdd.Clicked += async (sender, e) => {
+				string origin = pickerOrigin.Items[pickerOrigin.SelectedIndex];
+				string destination = pickerDestination.Items[pickerDestination.SelectedIndex];
+				string date = datepicker.Date.ToString("dd-MM-yyyy");
+				string time = timepicker.Time.ToString(@"hh\:mm");
+                string jsonFoundRides = null;
+                try
                 {
-                    header,
-                    button,
-                    label
+                    jsonFoundRides = await Web.WebService.GET(Settings.WebServiceURL + API.API_GetRides +
+                        origin + "/" + destination + "/" + date + "/" + time);
+                } catch (WebException we)
+                {
+                    await DisplayAlert("Error", we.Message, "Ok");
                 }
-            };
+				
+				if (jsonFoundRides == "[]")
+                {
+                    await DisplayAlert("No rides Found!", "No rides were found that matches your search.", "Ok");
+                }
+                else
+                {
+					await Navigation.PushAsync(new ListFoundRides(jsonFoundRides));
+				}
+					
+			};
 
-        }
-    }   
+
+			pickerOrigin.SelectedIndexChanged += (sender, args) =>{
+				if (pickerOrigin.SelectedIndex == pickerDestination.SelectedIndex){
+					btnAdd.IsEnabled = false;;
+					pickerOrigin.BackgroundColor = Color.Red;
+					pickerDestination.BackgroundColor = Color.Red;
+				}
+				else{                    
+					btnAdd.IsEnabled = (pickerOrigin.SelectedIndex != -1 && pickerDestination.SelectedIndex != -1);
+					pickerOrigin.BackgroundColor = Color.Default;
+					pickerDestination.BackgroundColor = Color.Default;
+				}
+			};
+
+			pickerDestination.SelectedIndexChanged += (sender, args) => {
+				if (pickerOrigin.SelectedIndex == pickerDestination.SelectedIndex)
+				{
+					btnAdd.IsEnabled = false;
+					pickerOrigin.BackgroundColor = Color.Red;
+					pickerDestination.BackgroundColor = Color.Red;
+				}
+				else
+				{
+					btnAdd.IsEnabled = (pickerOrigin.SelectedIndex != -1 && pickerDestination.SelectedIndex != -1);
+					pickerOrigin.BackgroundColor = Color.Default;
+					pickerDestination.BackgroundColor = Color.Default;
+				}
+			};
+
+			// Accomodate iPhone status bar.
+			this.Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
+
+
+			this.Content = new StackLayout
+			{
+				Children =
+				{
+					lblOrigin,
+					pickerOrigin,
+					lblDestination,
+					pickerDestination,
+					lblData,
+					datepicker,
+					lblTime,
+					timepicker,
+					btnAdd
+				}
+				};
+
+
+		}
+	}
 }

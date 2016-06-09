@@ -36,12 +36,12 @@ namespace RideAlong.Droid
                     var response = await request.GetResponseAsync();
                     var obj = JObject.Parse(response.GetResponseText());
 
-                    //salvando usuario
-                    App.user.id = long.Parse(obj["id"].ToString().Replace("\"", ""));
-                    App.user.name = obj["name"].ToString().Replace("\"", "");
-                    App.user.rating = 9000;
+                    User user = new User();
+                    user.ID = long.Parse(obj["id"].ToString().Replace("\"", ""));
+                    user.Name = obj["name"].ToString().Replace("\"", "");
+                    user.Rating = 9000;
 
-                    await App.NavigateToHome();
+                    await App.NavigateToHome(user);
                 }
                 else
                 {

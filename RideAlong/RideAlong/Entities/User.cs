@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SQLite.Net.Attributes;
+using System;
 
 namespace RideAlong.Entities
 {
@@ -13,9 +10,9 @@ namespace RideAlong.Entities
 
         }
 
-        public Int64 id { get; set; }
-        public String name { get; set; }
-        //public String profile { get; set; }
-        public int rating { get; set; }
+        [PrimaryKey]
+        public long ID { get; set; }
+        public String Name { get; set; }
+        public int Rating { get; set; }
     }
 }
