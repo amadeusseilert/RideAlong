@@ -42,34 +42,43 @@ namespace RideAlong.Views
             ridesList.ItemSelected += async (sender, e) => {
                 if (e.SelectedItem != null)
                 {
-                    var resp = await DisplayAlert("Ride Selected", "Do you want to ask for this ride?", "Yes", "No");
-                    if (resp == true)
+                    var selected = e.SelectedItem as Ride;
+                    if (App.dbRide.GetItem(selected.ID) == null)
                     {
-                        var selected = e.SelectedItem as Ride;
-
-                        string result = await Web.WebService.DELETE(Settings.WebServiceURL + API.API_ReserveRide + selected.ID);
-                        if (string.Compare(result, Strings.WS_OK) == 0)
+                        var resp = await DisplayAlert("Ride Selected", "Do you want to ask for this ride?", "Yes", "No");
+                        if (resp == true)
                         {
-                            App.dbRide.SaveItem(selected);
-                            await DisplayAlert("Success!", "Your ride has been reserved.", "Ok");
-                            while (Navigation.NavigationStack.Count > 2)
+
+                            string result = await Web.WebService.DELETE(Settings.WebServiceURL + API.API_ReserveRide + selected.ID);
+                            if (string.Compare(result, Strings.WS_OK) == 0)
                             {
+                                App.dbRide.SaveItem(selected);
+                                await DisplayAlert("Success!", "Your ride has been reserved.", "Ok");
+                                while (Navigation.NavigationStack.Count > 2)
+                                {
+                                    await Navigation.PopAsync();
+                                }
+
+                            }
+                            else
+                            {
+                                await DisplayAlert("Error!", "Could not reserve your ride.", "Ok");
                                 await Navigation.PopAsync();
                             }
-                            
-                        } else
-                        {
-                            await DisplayAlert("Error!", "Could not reserve your ride.", "Ok");
-                            await Navigation.PopAsync();
-                        }
 
+                        }
+                        else
+                        {
+                            ridesList.SelectedItem = null;
+                        }
                     }
                     else
                     {
-                        //					e.SelectedItem = null;
+                        await DisplayAlert("Ops!", "You already have this ride as My Ride.", "Ok");
                         ridesList.SelectedItem = null;
                     }
-                }
+
+                } 
             };
 
         }
